@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Mouse Trail Magic</title>
+  <title>Ember Trails</title>
   <style>
     body { margin:0; overflow:hidden; background:black; }
     canvas { display:block; }
@@ -22,19 +22,26 @@
     window.addEventListener('mousemove', e => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
-      particles.push({ x: e.clientX, y: e.clientY, life: 100 });
+      particles.push({ 
+        x: e.clientX, 
+        y: e.clientY, 
+        life: 120,
+        hue: 30 // warm orange
+      });
     });
 
     function animate() {
-      ctx.fillStyle = 'rgba(0,0,0,0.05)';
+      ctx.fillStyle = 'rgba(0,0,0,0.07)';
       ctx.fillRect(0,0,canvas.width,canvas.height);
 
       particles.forEach((p, i) => {
         p.life--;
-        const fade = p.life / 100;
+        const fade = p.life / 120;
+        p.hue += 1.2; // slowly shifts to red
+
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 3, 0, Math.PI*2);
-        ctx.fillStyle = `rgba(0,255,255,${fade})`;
+        ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
+        ctx.fillStyle = `hsla(${p.hue}, 90%, 60%, ${fade})`;
         ctx.fill();
 
         if (p.life <= 0) particles.splice(i,1);
