@@ -11,7 +11,7 @@
 <body>
   <canvas id="c"></canvas>
   <script>
-  const canvas = document.getElementById('c');
+  const canvas = document.getElementByid('c');
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -22,35 +22,37 @@
   window.addEventListener('mousemove', e => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
-    for(let i=0; i<3; i++) {  // spawn a few per move for density
+    for(let i=0; i<2; i++) {
       particles.push({ 
-        x: e.clientX + (Math.random()-0.5)*10,
+        x: e.clientX + (Math.random()-0.5)*15,
         y: e.clientY + (Math.random()-0.5)*10,
-        life: 140,
-        hue: 25 + Math.random()*15  // vary orange-red
+        vx: (Math.random()-0.5)*0.8,
+        vy: -0.3 - Math.random()*0.4,
+        life: 160,
+        hue: 20 + Math.random()*20
       });
     }
   });
 
   function animate() {
-    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    ctx.fillStyle = 'rgba(0,0,0,0.06)';
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
     particles.forEach((p, i) => {
+      p.x += p.vx;
+      p.y += p.vy;
       p.life--;
-      const fade = p.life / 140;
-      p.hue += 0.8; // shift to deeper red
+      const fade = p.life / 160;
+      p.hue += 0.5;
 
-      // main particle
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
-      ctx.fillStyle = `hsla(${p.hue}, 100%, 55%, ${fade*0.9})`;
+      ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
+      ctx.fillStyle = `hsla(${p.hue}, 95%, 55%, ${fade*0.95})`;
       ctx.fill();
 
-      // glow bloom
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 12, 0, Math.PI*2);
-      ctx.fillStyle = `hsla(${p.hue}, 90%, 50%, ${fade*0.25})`;
+      ctx.arc(p.x, p.y, 10, 0, Math.PI*2);
+      ctx.fillStyle = `hsla(${p.hue}, 80%, 45%, ${fade*0.3})`;
       ctx.fill();
 
       if (p.life <= 0) particles.splice(i,1);
